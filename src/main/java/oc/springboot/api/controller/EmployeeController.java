@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import oc.springboot.api.model.Employee;
@@ -48,6 +50,37 @@ public class EmployeeController {
     @DeleteMapping("/employee")
     public void deleteEmployee(final Long id) {
         employeeService.deleteEmployee(id);
+    }
+
+    @PutMapping("/employee/{id}")
+    public Employee updateEmployee(@PathVariable("id") final Long id, @RequestBody Employee employee) {
+        Optional<Employee> e = employeeService.getEmployee(id);
+        if (e.isPresent()) {
+            Employee currentEmployee = e.get();
+
+            String firstName = employee.getFirstName();
+            if (firstName != null) {
+                currentEmployee.setFirstName(firstName);
+            }
+            String lastName = employee.getLastName();
+            if (lastName != null) {
+                currentEmployee.setLastName(lastName);
+                ;
+            }
+            String mail = employee.getMail();
+            if (mail != null) {
+                currentEmployee.setMail(mail);
+            }
+            String password = employee.getPassword();
+            if (password != null) {
+                currentEmployee.setPassword(password);
+                ;
+            }
+            employeeService.saveEmployee(currentEmployee);
+            return currentEmployee;
+        } else {
+            return null;
+        }
     }
 
 }
